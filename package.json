@@ -1,0 +1,22 @@
+{
+  "name": "bookshelf-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JokoPrabowo/bookshelf-api-dicoding.git"
+  },
+  "keywords": [],
+  "author": "Joko Prabowo",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2"
+  }
+}
