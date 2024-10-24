@@ -74,6 +74,48 @@ const booksHandler = {
     }
   },
 
+  getAll(request, h) {
+    try {
+      return h.response({
+        status: 'success',
+        data: {
+          books,
+        },
+      }).code(200);
+    } catch (error) {
+      return h.response({
+        status: 'fail',
+        message: 'Gagal mengambil data buku',
+      }).code(500);
+    }
+  },
+
+  getOne(request, h) {
+    try {
+      const { id } = request.params;
+      const book = books.filter((data) => data.id === id)[0];
+
+      if (book === undefined) {
+        return h.response({
+          status: 'fail',
+          message: 'Buku tidak ditemukan',
+        }).code(404);
+      }
+
+      return h.response({
+        status: 'success',
+        data: {
+          book,
+        },
+      }).code(200);
+    } catch (error) {
+      return h.response({
+        status: 'fail',
+        message: 'Gagal mengambil data buku',
+      }).code(500);
+    }
+  },
+
 };
 
 module.exports = booksHandler;
