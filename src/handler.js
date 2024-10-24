@@ -6,7 +6,14 @@ const booksHandler = {
   add(request, h) {
     try {
       const {
-        name, year, author, summary, publisher, pageCount, readPage, reading,
+        name,
+        year,
+        author,
+        summary,
+        publisher,
+        pageCount,
+        readPage,
+        reading,
       } = request.payload;
 
       const id = nanoid(16);
