@@ -116,6 +116,61 @@ const booksHandler = {
     }
   },
 
+  update(request, h) {
+    try {
+      const {
+        name,
+        year,
+        author,
+        summary,
+        publisher,
+        pageCount,
+        readPage,
+        reading,
+      } = request.payload;
+
+      if (name === undefined) {
+        return h.response({
+          status: 'fail',
+          message: 'Gagal memperbarui buku. Mohon isi nama buku',
+        }).code(400);
+      }
+
+      if (readPage > pageCount) {
+        return h.response({
+          status: 'fail',
+          message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+        }).code(400);
+      }
+
+      const book = books.filter((data) => data.id === request.params.id)[0];
+      if (book === undefined) {
+        return h.response({
+          status: 'fail',
+          message: 'Gagal memperbarui buku. Id tidak ditemukan',
+        }).code(404);
+      }
+
+      book.name = name;
+      book.year = year;
+      book.author = author;
+      book.summary = summary;
+      book.publisher = publisher;
+      book.pageCount = pageCount;
+      book.readPage = readPage;
+      book.reading = reading;
+
+      return h.response({
+        status: 'success',
+        message: 'Buku berhasil diperbarui',
+      }).code(200);
+    } catch (error) {
+      return h.response({
+        status: 'fail',
+        message: 'Gagal mengambil data buku',
+      }).code(500);
+    }
+  },
 };
 
 module.exports = booksHandler;
