@@ -171,6 +171,30 @@ const booksHandler = {
       }).code(500);
     }
   },
+
+  delete(request, h) {
+    try {
+      const index = books.indexOf((data) => data.id === request.params.id);
+
+      if (index !== -1) {
+        books.splice(index, 1);
+        return h.response({
+          status: 'success',
+          message: 'Buku berhasil dihapus',
+        }).code(200);
+      }
+
+      return h.response({
+        status: 'fail',
+        message: 'Buku gagal dihapus. Id tidak ditemukan',
+      }).code(404);
+    } catch (error) {
+      return h.response({
+        status: 'fail',
+        message: 'Gagal mengambil data buku',
+      }).code(500);
+    }
+  },
 };
 
 module.exports = booksHandler;
