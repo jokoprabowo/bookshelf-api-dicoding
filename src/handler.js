@@ -19,7 +19,7 @@ const booksHandler = {
       const id = nanoid(16);
       const insertedAt = new Date().toISOString();
       const updatedAt = insertedAt;
-      let finished;
+      let finished = false;
 
       if (name === undefined) {
         return h.response({
@@ -28,19 +28,13 @@ const booksHandler = {
         }).code(400);
       }
 
-      if (reading) {
-        if (readPage <= pageCount) {
-          finished = false;
-        } else if (readPage === pageCount) {
-          finished = true;
-        } else {
-          return h.response({
-            status: 'fail',
-            message: 'Gagal menambahkan buku, readPage tidak boleh lebih besar daari pageCount',
-          }).code(400);
-        }
-      } else {
-        finished = false;
+      if (readPage === pageCount) {
+        finished = true;
+      } else if (readPage > pageCount) {
+        return h.response({
+          status: 'fail',
+          message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+        }).code(400);
       }
 
       const newBook = {
@@ -76,13 +70,55 @@ const booksHandler = {
 
   getAll(request, h) {
     try {
+      const { name, reading, finished } = request.query;
+      const bookList = [];
+
+      if (reading !== undefined) {
+        books.filter((data) => data.reading === (!!+reading)).forEach((book) => {
+          const obj = {};
+          obj.id = book.id;
+          obj.name = book.name;
+          obj.publisher = book.publisher;
+          bookList.push(obj);
+        });
+      } else if (finished !== undefined) {
+        books.filter((data) => data.finished === (!!+finished)).forEach((book) => {
+          const obj = {};
+          obj.id = book.id;
+          obj.name = book.name;
+          obj.publisher = book.publisher;
+          bookList.push(obj);
+        });
+      } else if (name !== undefined) {
+        books.filter((data) => {
+          const result = data.name.toLowerCase().match(name.toLowerCase());
+          console.log(result);
+          return result;
+        }).forEach((book) => {
+          const obj = {};
+          obj.id = book.id;
+          obj.name = book.name;
+          obj.publisher = book.publisher;
+          bookList.push(obj);
+        });
+      } else {
+        books.forEach((data) => {
+          const obj = {};
+          obj.id = data.id;
+          obj.name = data.name;
+          obj.publisher = data.publisher;
+          bookList.push(obj);
+        });
+      }
+
       return h.response({
         status: 'success',
         data: {
-          books,
+          books: bookList,
         },
       }).code(200);
     } catch (error) {
+      console.log(error.message);
       return h.response({
         status: 'fail',
         message: 'Gagal mengambil data buku',
@@ -174,7 +210,7 @@ const booksHandler = {
 
   delete(request, h) {
     try {
-      const index = books.indexOf((data) => data.id === request.params.id);
+      const index = books.findIndex((data) => data.id === request.params.id);
 
       if (index !== -1) {
         books.splice(index, 1);
